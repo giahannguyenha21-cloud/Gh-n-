@@ -1,0 +1,10 @@
+document.addEventListener('DOMContentLoaded',()=>{
+ const toggle=document.querySelector('.menu-toggle'),nav=document.querySelector('.nav');
+ if(toggle&&nav)toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'×':'☰'});
+ const lb=document.createElement('div');lb.className='lightbox';lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','Ảnh phóng to');lb.innerHTML='<button type="button" aria-label="Đóng ảnh">×</button><img alt="Ảnh phóng to">';document.body.appendChild(lb);
+ const lbImg=lb.querySelector('img'),lbButton=lb.querySelector('button'),close=()=>{lb.classList.remove('open');lbImg.removeAttribute('src')};
+ document.querySelectorAll('img.zoomable,.credits-grid img').forEach(img=>{img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label',(img.alt||'Ảnh')+' — nhấn để phóng to');const open=()=>{lbImg.src=img.currentSrc||img.src;lbImg.alt=img.alt||'Ảnh phóng to';lb.classList.add('open');lbButton.focus()};img.addEventListener('click',open);img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}})});
+ lb.addEventListener('click',e=>{if(e.target===lb)close()});lbButton.addEventListener('click',close);document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+ const revealTargets=document.querySelectorAll('.chapter-card,.discovery,.science-figure,.law-card,.fact-grid article,.legacy-feature,.source-item,.credits-grid article,.timeline article,.image-note,.feature-band,.offline-card,.archive-figure');
+ if('IntersectionObserver' in window){const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}}),{threshold:.06});revealTargets.forEach(el=>{el.classList.add('reveal');obs.observe(el)})}else{revealTargets.forEach(el=>el.classList.add('visible'))}
+});
